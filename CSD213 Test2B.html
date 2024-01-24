@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<style>
+  table {
+    text-align: center;
+    margin-left: 10%;
+    margin-right: 50%;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  }
+  input,
+  button {
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    align: center;
+  }
+  .error {
+    border-color: red;
+    background-color: white;
+  }
+  #errorMessages {
+    color: red;
+  }
+</style>
+</head>
+<body>
+<div align="center">
+  <h1>Booking your place for dinner!</h1>
+
+  <label for="name">Name:</label>
+  <input type="text" id="name" size="22" oninput="validateForm()">
+  <span id="nameError" class="error"></span>
+
+  <label for="phone">Phone Number</label>
+  <input type="text" id="phone" size="22" oninput="validateForm()"><br>
+  <span id="phoneError" class="error"></span>
+</div>
+<br>
+<div align="margin-left">
+  <h2>Select a time</h2>
+  <input type="radio" id="first" name="firstSeating" value="5" checked>
+  <label for="first">5:00</label><br>
+  <input type="radio" id="second" name="secondSeating" value="6">
+  <label for="second">6:00</label><br>
+  <input type="radio" id="third" name="thirdSeating" value="7">
+  <label for="third">7:00</label><br>
+  <input type="radio" id="fourth" name="fourthSeating" value="8">
+  <label for="fourth">8:00</label><br>
+  <br>
+  <h2>What would you like to have with us?</h2>
+  <input type="checkbox" id="starters" name="food" value="starters">
+  <label for="starters">Starters</label><br>
+  <input type="checkbox" id="Main" name="food" value="main">
+  <label for="Main">Main Course</label><br>
+  <input type="checkbox" id="dessert" name="food" value="dessert">
+  <label for="dessert">Dessert</label><br>
+  <input type="checkbox" id="drinks" name="food" value="drinks">
+  <label for="drinks">Drinks</label><br>
+</div>
+<button id="submit" disabled onclick="submitForm()">Submit</button>
+
+<div id="errorMessages"></div>
+<p id="confirmationStatement" style="display:none;"></p>
+
+<script>
+function validateName() {
+  const name = document.getElementById("name").value;
+  const nameError = document.getElementById("nameError");
+  nameError.textContent = "";
+
+  if (!name) {
+    nameError.textContent = "ERROR: Name is empty.";
+    document.getElementById("name").classList.add("error");
+    return false;
+  }
+
+  const names = name.split(" ");
+  if (names.length < 2) {
+    nameError.textContent = "Error: First and Last names are required.";
+    document.getElementById("name").classList.add("error");
+    return false;
+  }
+
+  document.getElementById("name").classList.remove("error");
+  return true;
+}
+
+function validatePhone() {
+  const phone = document.getElementById("phone").value;
+  const phoneError = document.getElementById("phoneError");
+  phoneError.textContent = "";
+
+  if (!phone) {
+    phoneError.textContent = "Error: Phone number is empty.";
+    document.getElementById("phone").classList.add("error");
+    return false;
+  }
+
+ 
+  if (isNaN(phone[0])) {
+    phoneError.textContent = "Phone number must start with numbers.";
+    document.getElementById("phone").classList.add("error");
+    return false;
+  }
+
+  
+  if (phone.length !== 6) {
+    phoneError.textContent = "Phone number must be 6 characters long.";
+    document.getElementById("phone").classList.add("error");
+    return false;
+  }
+
+  document.getElementById("phone").classList.remove("error");
+  return true;
+}
+
+function validateForm() {
+  const isNameValid = validateName();
+  const isPhoneValid = validatePhone();
+  const submitButton = document.getElementById("submit");
+  const errorMessages = document.getElementById("errorMessages");
+
+ 
+  errorMessages.innerHTML = "";
+  if (!isNameValid) {
+    errorMessages.innerHTML += "<p>Name is invalid.</p>";
+  }
+  if (!isPhoneValid) {
+    errorMessages.innerHTML += "<p>Phone number is invalid.</p>";
+  }
+
+
+  submitButton.disabled = !(isNameValid && isPhoneValid);
+}
+
+function submitForm() {
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const time = document.querySelector('input[name="firstSeating"]:checked').value;
+  const selectedFood = Array.from(document.querySelectorAll('input[name="food"]:checked')).map(food => food.value);
+
+  const confirmationStatement = `Reservation for: ${name} Phone: ${phone} at ${time}. Starters are: ${selectedFood.join(', ')}.`;
+
+  document.getElementById("confirmationStatement").textContent = confirmationStatement;
+  document.getElementById("confirmationStatement").style.display = "block";
+}
+</script>
+</body>
+</html>
